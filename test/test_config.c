@@ -17,9 +17,11 @@ void test_config_length_is_okay(void)
     // len = 50
     char *max_string = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
     TEST_ASSERT_TRUE(he_internal_config_is_string_length_okay(max_string));
+    TEST_ASSERT_FALSE(he_internal_config_is_string_too_long(max_string));
     // len = 51
     char *too_long_string = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
     TEST_ASSERT_FALSE(he_internal_config_is_string_length_okay(too_long_string));
+    TEST_ASSERT_TRUE(he_internal_config_is_string_too_long(too_long_string));
 }
 
 void test_config_is_empty_string(void)

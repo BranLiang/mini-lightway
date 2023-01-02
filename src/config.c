@@ -21,3 +21,8 @@ bool he_internal_config_is_empty_string(const char *string)
 
     return false;
 }
+
+bool he_internal_config_is_string_too_long(const char *string)
+{
+    return !he_internal_config_is_string_length_okay(string);
+}
