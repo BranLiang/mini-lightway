@@ -13,3 +13,19 @@ const char *he_return_code_name(he_return_code_t rc)
     }
     return "HE_ERR_UNKNOWN";
 }
+
+const char *he_client_state_name(he_conn_state_t st)
+{
+    switch (st)
+    {
+        DEFCASE(HE_STATE_NONE);
+        DEFCASE(HE_STATE_DISCONNECTED);
+        DEFCASE(HE_STATE_CONNECTING);
+        DEFCASE(HE_STATE_DISCONNECTING);
+        DEFCASE(HE_STATE_AUTHENTICATING);
+        DEFCASE(HE_STATE_LINK_UP);
+        DEFCASE(HE_STATE_ONLINE);
+        DEFCASE(HE_STATE_CONFIGURING);
+    }
+    return "HE_STATE_UNKNOWN";
+}
