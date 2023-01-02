@@ -24,4 +24,10 @@ void test_utils_client_state_name(void)
     TEST_ASSERT_EQUAL_STRING("HE_STATE_UNKNOWN", he_client_state_name(-1));
 }
 
+void test_utils_client_event_name(void)
+{
+    TEST_ASSERT_EQUAL_STRING("HE_EVENT_FIRST_MESSAGE_RECEIVED", he_client_event_name(HE_EVENT_FIRST_MESSAGE_RECEIVED));
+    TEST_ASSERT_EQUAL_STRING("HE_EVENT_UNKNOWN", he_client_event_name(-1));
+}
+
 #endif // TEST
