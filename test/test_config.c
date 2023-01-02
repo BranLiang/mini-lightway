@@ -32,4 +32,18 @@ void test_config_is_empty_string(void)
     TEST_ASSERT_FALSE(he_internal_config_is_empty_string(not_empty_string));
 }
 
+void test_config_set_string(void)
+{
+    char field[HE_CONFIG_TEXT_FIELD_LENGTH];
+    char *value = "test";
+    TEST_ASSERT_EQUAL(HE_SUCCESS, he_internal_set_config_string(field, value));
+    TEST_ASSERT_EQUAL_STRING(value, field);
+    value = "";
+    TEST_ASSERT_EQUAL(HE_ERR_EMPTY_STRING, he_internal_set_config_string(field, value));
+    value = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
+    TEST_ASSERT_EQUAL(HE_ERR_STRING_TOO_LONG, he_internal_set_config_string(field, value));
+    value = NULL;
+    TEST_ASSERT_EQUAL(HE_ERR_NULL_POINTER, he_internal_set_config_string(field, value));
+}
+
 #endif // TEST
