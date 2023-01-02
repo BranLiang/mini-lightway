@@ -1,0 +1,21 @@
+{
+    "configurations": [
+        {
+            "name": "macos-arm",
+            "includePath": [
+                "${workspaceFolder}/src",
+                "${workspaceFolder}/include",
+                "${env:GEM_PATH}/gems/ceedling-0.31.1/vendor/unity/src",
+                "${env:GEM_PATH}/gems/ceedling-0.31.1/vendor/cmock/src"
+            ],
+            "macFrameworkPath": [
+                "/System/Library/Frameworks",
+                "/Library/Frameworks"
+            ],
+            "intelliSenseMode": "macos-gcc-x64",
+            "compilerPath": "/usr/bin/gcc",
+            "cStandard": "c99"
+        }
+    ],
+    "version": 4
+}
