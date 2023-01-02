@@ -1,6 +1,6 @@
 #include "config.h"
 
-bool he_internal_config_is_string_length_ok(const char *string)
+bool he_internal_config_is_string_length_okay(const char *string)
 {
     size_t len = strnlen(string, HE_CONFIG_TEXT_FIELD_LENGTH + 1);
 
@@ -10,4 +10,14 @@ bool he_internal_config_is_string_length_ok(const char *string)
     }
 
     return true;
+}
+
+bool he_internal_config_is_empty_string(const char *string)
+{
+    if (string[0] == '\0')
+    {
+        return true;
+    }
+
+    return false;
 }
