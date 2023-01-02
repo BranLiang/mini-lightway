@@ -2,11 +2,12 @@
     "configurations": [
         {
             "name": "macos-arm",
+            "defines": [ "TEST" ],
             "includePath": [
                 "${workspaceFolder}/src",
                 "${workspaceFolder}/include",
-                "${env:GEM_PATH}/gems/ceedling-0.31.1/vendor/unity/src",
-                "${env:GEM_PATH}/gems/ceedling-0.31.1/vendor/cmock/src"
+                "${env:GEM_HOME}/gems/ceedling-0.31.1/vendor/unity/src",
+                "${env:GEM_HOME}/gems/ceedling-0.31.1/vendor/cmock/src"
             ],
             "macFrameworkPath": [
                 "/System/Library/Frameworks",
