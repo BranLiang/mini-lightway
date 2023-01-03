@@ -4,6 +4,7 @@
             "name": "macos-arm",
             "defines": [ "TEST" ],
             "includePath": [
+                "/usr/local/include",
                 "${workspaceFolder}/src",
                 "${workspaceFolder}/include",
                 "${env:GEM_HOME}/gems/ceedling-0.31.1/vendor/unity/src",
