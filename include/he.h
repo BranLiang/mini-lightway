@@ -5,6 +5,7 @@
 #include <stdlib.h>
 
 #include <wolfssl/wolfcrypt/random.h>
+#include <wolfssl/ssl.h>
 
 #define HE_CONFIG_TEXT_FIELD_LENGTH 50
 /// Maximum size of an IPV4 String
@@ -17,20 +18,126 @@
 
 typedef enum he_return_code
 {
-    // Success
-    HE_SUCCESS = 0,
-    // This will be returned if a string parameter is too long to be stored.
-    HE_ERR_STRING_TOO_LONG = -1,
-    // This will be returned if trying to set a configuration parameter to an empty string
-    HE_ERR_EMPTY_STRING = -2,
-    // A null pointer was passed as an argument
-    HE_ERR_NULL_POINTER = -4,
-    // Initialisation failed - this is usually an issue with the SSL layer
-    HE_ERR_INIT_FAILED = -9,
-    // Generic issue
-    HE_ERR_FAILED = -33,
-    // A plugin requested that we drop the packet without further processing
-    HE_ERR_PLUGIN_DROP = -49,
+  /// If the function call completed successfully, this will be returned.
+  HE_SUCCESS = 0,
+  /// This will be returned if a string parameter is too long to be stored.
+  HE_ERR_STRING_TOO_LONG = -1,
+  /// This will be returned if trying to set a configuration parameter to an empty string
+  HE_ERR_EMPTY_STRING = -2,
+  /**
+   * @brief This will be returned if a function was called against a connection context that isn't
+   * in a good state.
+   *
+   * For example this could happened when calling he_conn_connect_client() on an already connected
+   * context.
+   */
+  HE_ERR_INVALID_CONN_STATE = -3,
+  /// A null pointer was passed as an argument
+  HE_ERR_NULL_POINTER = -4,
+  /// An empty packet was passed to the function. Either a NULL pointer or a length of zero.
+  HE_ERR_EMPTY_PACKET = -5,
+  /// The packet passed to the function is too small to be valid
+  HE_ERR_PACKET_TOO_SMALL = -6,
+  /// The length parameter was set to zero
+  HE_ERR_ZERO_SIZE = -7,
+  /// A negative value was given but only an unsigned value is acceptable
+  HE_ERR_NEGATIVE_NUMBER = -8,
+  /// Initialisation failed - this is usually an issue with the SSL layer
+  HE_ERR_INIT_FAILED = -9,
+  /// Could not allocate memory
+  HE_ERR_NO_MEMORY = -10,
+  /// Packet provided does not have a Helium header
+  HE_ERR_NOT_HE_PACKET = -11,
+  /// The SSL certificate is not in PEM format
+  HE_ERR_SSL_BAD_FILETYPE = -12,
+  /// The SSL certificate is corrupt or missing
+  HE_ERR_SSL_BAD_FILE = -13,
+  /// The SSL layer was not able to allocate more memory
+  HE_ERR_SSL_OUT_OF_MEMORY = -14,
+  /// The SSL certificate is not in the correct format
+  HE_ERR_SSL_ASN_INPUT = -15,
+  /// The SSL layer ran out of buffers
+  HE_ERR_SSL_BUFFER = -16,
+  /// Generic issue with the SSL certificate - the SSL layer did not provide further information
+  HE_ERR_SSL_CERT = -17,
+  /// Generic issue with the SSL layer
+  HE_ERR_SSL_ERROR = -18,
+  /// Username not set in config
+  HE_ERR_CONF_USERNAME_NOT_SET = -19,
+  /// Password not set in config
+  HE_ERR_CONF_PASSWORD_NOT_SET = -20,
+  /// CA not set in config
+  HE_ERR_CONF_CA_NOT_SET = -21,
+  /// MTU not set in config
+  HE_ERR_CONF_MTU_NOT_SET = -22,
+  /// Helium needs to read more data before it can continue
+  HE_WANT_READ = -23,
+  /// Helium needs to write more data before it can continue
+  HE_WANT_WRITE = -24,
+  /// Outside write callback not set in config
+  HE_ERR_CONF_OUTSIDE_WRITE_CB_NOT_SET = -25,
+  /// General connection failed error
+  HE_ERR_CONNECT_FAILED = -26,
+  /// The SSL Connection has failed due to timeout
+  HE_CONNECTION_TIMED_OUT = -27,
+  /// Helium is not connected
+  HE_ERR_NOT_CONNECTED = -28,
+  /// Helium only supports IPv4 and IPv6
+  HE_ERR_UNSUPPORTED_PACKET_TYPE = -29,
+  /// The connection was closed
+  HE_ERR_CONNECTION_WAS_CLOSED = -30,
+  /// The packet was invalid (wrong length, bad type etc)
+  HE_ERR_BAD_PACKET = -31,
+  /// Callback failed
+  HE_ERR_CALLBACK_FAILED = -32,
+  /// Generic issue
+  HE_ERR_FAILED = -33,
+  /// Domain Name mismatch - supplied DN didn't match server certificate
+  HE_ERR_SERVER_DN_MISMATCH = -34,
+  /// Unable to verify the server certificate. Usually bad CA chain but could be caused by other
+  /// weird issues
+  HE_ERR_CANNOT_VERIFY_SERVER_CERT = -35,
+  /// Attempted to call disconnect before connect. If this error is received, the state can be
+  /// safely destroyed
+  HE_ERR_NEVER_CONNECTED = -36,
+  /// MTU size was invalid
+  HE_ERR_INVALID_MTU_SIZE = -37,
+  /// Failed to clean up global state
+  HE_ERR_CLEANUP_FAILED = -38,
+  /// The server rejected or couldn't find our session
+  HE_ERR_REJECTED_SESSION = -39,
+  /// The server rejected the login
+  HE_ERR_ACCESS_DENIED = -40,
+  /// Packet provided was too large
+  HE_ERR_PACKET_TOO_LARGE = -41,
+  /// Disconnect due to inactivity timeout
+  HE_ERR_INACTIVITY_TIMEOUT = -42,
+  /// Pointer would overflow
+  HE_ERR_POINTER_WOULD_OVERFLOW = -43,
+  /// Connection type argument is not defined in he_connection_type_t
+  HE_ERR_INVALID_CONNECTION_TYPE = -46,
+  /// RNG Failure
+  HE_ERR_RNG_FAILURE = -47,
+  /// Auth callback not set on a server
+  HE_ERR_CONF_AUTH_CB_NOT_SET = -48,
+  /// A plugin requested that we drop the packet without further processing
+  HE_ERR_PLUGIN_DROP = -49,
+  /// Inconsistent session received on server side
+  HE_ERR_UNKNOWN_SESSION = -50,
+  /// An SSL error occurred on a D/TLS packet but it does not need to terminate the connection
+  HE_ERR_SSL_ERROR_NONFATAL = -51,
+  /// Protocol version for connection changed after creation
+  HE_ERR_INCORRECT_PROTOCOL_VERSION = -52,
+  /// Client has both username/password set AND authentication buffer set
+  HE_ERR_CONF_CONFLICTING_AUTH_METHODS = -53,
+  /// Server has received an auth_buf message but does not have a handler configured
+  HE_ERR_ACCESS_DENIED_NO_AUTH_BUF_HANDLER = -54,
+  /// Server has received an auth_userpass message but does not have a handler configured
+  HE_ERR_ACCESS_DENIED_NO_AUTH_USERPASS_HANDLER = -55,
+  /// The client has received the goodbye message from server
+  HE_ERR_SERVER_GOODBYE = -56,
+  /// Invalid authentication type
+  HE_ERR_INVALID_AUTH_TYPE = -57,
 } he_return_code_t;
 
 typedef enum he_conn_state
