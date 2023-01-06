@@ -28,4 +28,24 @@
  */
 int he_wolf_dtls_read(WOLFSSL *ssl, char *buf, int sz, void *ctx);
 
+/**
+ * @brief Callback function to handle WolfSSL write requests
+ * @param ssl A pointer to the WolfSSL session that this callback relates to
+ * @param buf A pointer to the buffer the callback reads data from
+ * @param sz The size of the data to be read
+ * @param ctx A pointer to the Helium context that this callback relates to
+ * @return int The length of the data copied to the buffer
+ *
+ * Helium does not know about sockets and as such, neither can WolfSSL. Helium
+ * overrides the standard socket calls with its own callback functions.
+ *
+ * This function simply calls the user provided write callback
+ *
+ * @note The buffer is only valid until this function returns. As such the user provided write
+ * callback must copy the data from the buffer if it needs it to persist after that time.
+ */
+
+int he_wolf_dtls_write(WOLFSSL *ssl, char *buf, int sz, void *ctx);
+
+
 #endif // WOLF_H

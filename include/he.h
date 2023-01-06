@@ -385,3 +385,23 @@ struct he_conn {
   /// Random number generator
   RNG wolf_rng;
 };
+
+/**
+ * @brief The wire header format
+ * It is strongly discouraged to interact with this header structure, however,
+ * it is provided for specific use cases (such as a server rejecting a session,
+ * where by definition we don't have a connection object).
+ */
+typedef struct he_wire_hdr {
+  // First two bytes to contain the 'H' and 'e'
+  char he[2];
+  // Version of the wire protocol
+  uint8_t major_version;
+  uint8_t minor_version;
+  // Request aggressive mode
+  uint8_t aggressive_mode;
+  // Three bytes reserved for future use
+  uint8_t reserved[3];
+  // 64 bit session identifier
+  uint64_t session;
+} he_wire_hdr_t;
